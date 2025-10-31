@@ -2,7 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.0] - 2025-01-11
+## [1.0.1] - 2025-10-31
+
+### Added
+- **CustomAppText** - Text widget with automatic DSTextStyles integration
+- **DSTextStyles.initialize()** - Theme-aware font initialization API
+- Direct style overrides (color, fontSize, fontWeight, decoration)
+
+### Features
+- CustomAppText defaults to DSTextStyles.body
+- Seamless font family detection from MaterialApp theme
+- Simple API for overriding specific style properties
+- Better documentation and usage examples
+
+## [1.0.0] - 2025-10-31
 
 ### Added
 - Initial release

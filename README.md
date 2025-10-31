@@ -9,10 +9,12 @@ A minimal, production-ready design system for Flutter applications. Build beauti
 
 - 🎯 **Consistent Design Tokens** - Spacing, sizing, colors, typography
 - 📱 **Fully Responsive** - Built with flutter_screenutil for perfect scaling
-- 🧩 **Pre-built Components** - AppBar, Buttons, Form Fields, Screen Wrapper
+- 🧩 **Pre-built Components** - AppBar, Buttons, Form Fields, Text Widget, Screen Wrapper
+- 📝 **CustomAppText** - Simplified text widget with automatic DSTextStyles integration
 - 🎨 **Easy Customization** - Full copyWith support on all components
 - ♿ **Accessible** - Follows WCAG guidelines (44×44 touch targets)
 - 🌍 **RTL Support** - Works seamlessly with Arabic and other RTL languages
+- 🎨 **Theme-Aware Fonts** - Automatic font detection from MaterialApp theme
 - 📦 **Zero Configuration** - Works out of the box
 - 🔧 **Type-Safe** - Leverages Dart's type system
 
@@ -23,7 +25,7 @@ CustomScreen(
   title: 'Home',
   body: Column(
     children: [
-      Text('Welcome Back!', style: DSTextStyles.pageTitle),
+      CustomAppText('Welcome Back!', style: DSTextStyles.pageTitle),
       DSVSpace.xlg,
       DSButton.primary(label: 'Get Started', onPressed: () {}),
     ],
@@ -37,7 +39,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_minimal_design: ^1.0.0
+  flutter_minimal_design: ^1.0.1
   flutter_screenutil: ^5.9.0
   flutter_svg: ^2.0.9
 ```
@@ -93,7 +95,7 @@ class HomeScreen extends StatelessWidget {
       title: 'Home',
       body: Column(
         children: [
-          Text('Welcome!', style: DSTextStyles.pageTitle),
+          CustomAppText('Welcome!', style: DSTextStyles.pageTitle),
           DSVSpace.xlg,
           DSButton.primary(
             label: 'Get Started',
@@ -170,6 +172,42 @@ CustomScreen(
   body: Content(),
 )
 ```
+
+### 📝 CustomAppText Widget
+
+Simplified text widget with automatic DSTextStyles integration:
+
+```dart
+// Basic usage (defaults to DSTextStyles.body)
+CustomAppText('Hello World')
+
+// With specific text style
+CustomAppText('Title', style: DSTextStyles.pageTitle)
+
+// With style overrides
+CustomAppText(
+  'Custom Text',
+  color: Colors.blue,
+  fontSize: 18,
+  fontWeight: FontWeight.bold,
+)
+
+// All standard Text properties
+CustomAppText(
+  'Long text example',
+  style: DSTextStyles.body,
+  maxLines: 2,
+  overflow: TextOverflow.ellipsis,
+  textAlign: TextAlign.center,
+)
+```
+
+**Features:**
+- ✅ Defaults to DSTextStyles.body
+- ✅ Quick style overrides without copyWith
+- ✅ Full Text widget compatibility
+- ✅ Automatic theme font integration
+- ✅ Responsive font sizes
 
 ### 🔘 Buttons
 
@@ -311,6 +349,50 @@ DSTextStyles.caption          // 12.sp, w400
 DSTextStyles.button           // 16.sp, w600
 ```
 
+**CustomAppText** - Simplified text widget with automatic DSTextStyles integration:
+
+```dart
+// Basic usage (uses DSTextStyles.body by default)
+CustomAppText('Hello World')
+
+// With custom style
+CustomAppText('Title', style: DSTextStyles.pageTitle)
+
+// With direct overrides
+CustomAppText(
+  'Custom Text',
+  color: Colors.blue,
+  fontWeight: FontWeight.bold,
+  fontSize: 18,
+)
+
+// All Text widget properties supported
+CustomAppText(
+  'Long text that wraps',
+  style: DSTextStyles.body,
+  maxLines: 2,
+  overflow: TextOverflow.ellipsis,
+  textAlign: TextAlign.center,
+)
+```
+
+**Initialize Theme-Aware Fonts** (Optional):
+
+```dart
+// In your MaterialApp
+MaterialApp(
+  theme: ThemeData(
+    fontFamily: 'Cairo', // Your custom font
+  ),
+  home: Builder(
+    builder: (context) {
+      DSTextStyles.initialize(context);
+      return HomeScreen();
+    },
+  ),
+)
+```
+
 ### Padding Presets
 
 ```dart
@@ -349,7 +431,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Welcome Back', style: DSTextStyles.pageTitle),
+            CustomAppText('Welcome Back', style: DSTextStyles.pageTitle),
             DSVSpace.xlg,
             
             DSFormField.email(
@@ -477,7 +559,7 @@ class SettingsScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Account', style: DSTextStyles.sectionHeader),
+          CustomAppText('Account', style: DSTextStyles.sectionHeader),
           DSVSpace.md,
           
           SettingTile(
@@ -494,7 +576,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           DSVSpace.xlg,
           
-          Text('Preferences', style: DSTextStyles.sectionHeader),
+          CustomAppText('Preferences', style: DSTextStyles.sectionHeader),
           DSVSpace.md,
           
           SettingTile(
@@ -771,10 +853,11 @@ import 'package:flutter_minimal_design/flutter_minimal_design.dart';
 ## 📦 What's Included
 
 - ✅ **Foundation**: Spacing, Sizing, Colors, Typography, Border Radius
-- ✅ **Components**: CustomScreen, AppBar, Buttons, Form Fields
+- ✅ **Components**: CustomScreen, AppBar, Buttons, Form Fields, CustomAppText
 - ✅ **Utilities**: Spacing widgets, Padding presets, Extensions
 - ✅ **Pre-configured Variants**: 6 button types, 6 form field types, 9 screen types
 - ✅ **Complete copyWith**: All components support full customization
+- ✅ **Theme Integration**: Automatic font detection and initialization API
 
 ## 🎯 Package Size
 
