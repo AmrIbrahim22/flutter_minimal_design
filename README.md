@@ -806,9 +806,10 @@ See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## 🔗 Links
 
-- [Documentation](https://github.com/yourusername/flutter_minimal_design/wiki)
-- [Examples](https://github.com/yourusername/flutter_minimal_design/tree/main/example)
-- [Issue Tracker](https://github.com/yourusername/flutter_minimal_design/issues)
+
+- [Documentation](https://github.com/AmrIbrahim22/flutter_minimal_design/wiki)
+- [Examples](https://github.com/AmrIbrahim22/flutter_minimal_design/tree/main/example)
+- [Issue Tracker](https://github.com/AmrIbrahim22/flutter_minimal_design/issues)
 - [pub.dev](https://pub.dev/packages/flutter_minimal_design)
 
 ---
