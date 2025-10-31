@@ -1,9 +1,10 @@
 name: flutter_minimal_design
-description: A comprehensive design system for Flutter mobile applications
-version: 1.0.0
-homepage: https://github.com/yourusername/flutter_minimal_design
-repository: https://github.com/yourusername/flutter_minimal_design
-issue_tracker: https://github.com/yourusername/flutter_minimal_design/issues
+description: A minimal and elegant design system for Flutter applications
+version: 1.0.0  
+homepage: https://github.com/AmrIbrahim22/flutter_minimal_design
+repository: https://github.com/AmrIbrahim22/flutter_minimal_design
+issue_tracker: https://github.com/AmrIbrahim22/flutter_minimal_design/issues
+documentation: https://github.com/AmrIbrahim22/flutter_minimal_design/wiki
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
