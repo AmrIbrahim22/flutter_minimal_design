@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../foundation/ds_size.dart';
 import '../foundation/ds_spacing.dart';
 import '../foundation/ds_text_styles.dart';
+import '../utils/ds_navigation_utils.dart';
 
 /// AppAppBar with Design System Integration
 class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -18,6 +19,11 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? borderColor;
   final FontWeight? titleFontWeight;
   final double? titleFontSize;
+  
+  // NEW: Custom leading widget and border control
+  final Widget? leadingWidget;
+  final bool showLeadingBorder;
+  final double? leadingBorderWidth;
 
   const AppAppBar({
     super.key,
@@ -32,6 +38,9 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.borderColor,
     this.titleFontWeight,
     this.titleFontSize,
+    this.leadingWidget,
+    this.showLeadingBorder = true,
+    this.leadingBorderWidth,
   });
 
   /// copyWith method for easy customization
@@ -47,6 +56,9 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     Color? borderColor,
     FontWeight? titleFontWeight,
     double? titleFontSize,
+    Widget? leadingWidget,
+    bool? showLeadingBorder,
+    double? leadingBorderWidth,
   }) {
     return AppAppBar(
       title: title ?? this.title,
@@ -60,6 +72,9 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
       borderColor: borderColor ?? this.borderColor,
       titleFontWeight: titleFontWeight ?? this.titleFontWeight,
       titleFontSize: titleFontSize ?? this.titleFontSize,
+      leadingWidget: leadingWidget ?? this.leadingWidget,
+      showLeadingBorder: showLeadingBorder ?? this.showLeadingBorder,
+      leadingBorderWidth: leadingBorderWidth ?? this.leadingBorderWidth,
     );
   }
 
@@ -67,37 +82,21 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: DSSpacing.sm.horizontal,  // 8.w
-        vertical: DSSpacing.md.vertical,      // 12.h
+        horizontal: DSSpacing.sm.horizontal, // 8.w
+        vertical: DSSpacing.md.vertical, // 12.h
       ),
       child: AppBar(
         leading: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: DSSpacing.sm.horizontal,  // 8.w
-            vertical: DSSpacing.md.vertical,      // 12.h
+            horizontal: DSSpacing.sm.horizontal, // 8.w
+            vertical: DSSpacing.md.vertical, // 12.h
           ),
           child: GestureDetector(
-            onTap: onBackPressed ?? () => Navigator.of(context).pop(),
+            onTap: onBackPressed ??
+                () => NavigationUtils.defaultBackAction(context),
             child: hideIcon
                 ? const SizedBox.shrink()
-                : Container(
-                    height: DSSize.smallButtonHeight,        // 32.h
-                    width: DSSize.smallButtonHeight,         // 32.w
-                    decoration: BoxDecoration(
-                      borderRadius: DSRadius.sm,             // 8.r
-                      border: Border.all(
-                        width: 1.w,
-                        color: borderColor ?? const Color(0xffDFE2E6),
-                      ),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.arrow_back_ios_new,
-                        size: DSSize.iconSm,                 // 20.sp
-                        color: iconColor ?? const Color(0xff303136),
-                      ),
-                    ),
-                  ),
+                : leadingWidget ?? _buildDefaultLeading(),
           ),
         ),
         title: title != null
@@ -118,12 +117,35 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
             ? [
                 Padding(
                   padding: EdgeInsets.only(
-                    right: DSSpacing.sm.horizontal,  // 8.w
+                    right: DSSpacing.sm.horizontal, // 8.w
                   ),
                   child: endWidget!,
                 ),
               ]
             : null,
+      ),
+    );
+  }
+
+  Widget _buildDefaultLeading() {
+    return Container(
+      height: DSSize.smallButtonHeight, // 32.h
+      width: DSSize.smallButtonHeight, // 32.w
+      decoration: BoxDecoration(
+        borderRadius: DSRadius.sm, // 8.r
+        border: showLeadingBorder
+            ? Border.all(
+                width: leadingBorderWidth ?? 1.w,
+                color: borderColor ?? const Color(0xffDFE2E6),
+              )
+            : null,
+      ),
+      child: Center(
+        child: Icon(
+          Icons.arrow_back_ios_new,
+          size: DSSize.iconSm, // 20.sp
+          color: iconColor ?? const Color(0xff303136),
+        ),
       ),
     );
   }
@@ -136,46 +158,38 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 /// Usage Examples:
 /// 
-/// // Basic usage
+/// // Basic usage (with default border)
 /// AppAppBar(
 ///   title: 'Settings',
 /// )
 /// 
-/// // With custom back action
+/// // Without border
 /// AppAppBar(
 ///   title: 'Profile',
-///   onBackPressed: () => print('Custom back'),
+///   showLeadingBorder: false,
+/// )
+/// 
+/// // Custom border color and width
+/// AppAppBar(
+///   title: 'Messages',
+///   borderColor: Colors.blue,
+///   leadingBorderWidth: 2,
+/// )
+/// 
+/// // Custom leading widget
+/// AppAppBar(
+///   title: 'Custom',
+///   leadingWidget: Container(
+///     decoration: BoxDecoration(
+///       color: Colors.blue,
+///       shape: BoxShape.circle,
+///     ),
+///     child: Icon(Icons.close, color: Colors.white),
+///   ),
 /// )
 /// 
 /// // Hide back button
 /// AppAppBar(
 ///   title: 'Home',
 ///   hideIcon: true,
-/// )
-/// 
-/// // With end widget
-/// AppAppBar(
-///   title: 'Messages',
-///   endWidget: IconButton(
-///     icon: Icon(Icons.more_vert),
-///     onPressed: () {},
-///   ),
-/// )
-/// 
-/// // Using copyWith for customization
-/// final baseAppBar = AppAppBar(title: 'Base');
-/// final darkAppBar = baseAppBar.copyWith(
-///   titleColor: Colors.white,
-///   backgroundColor: Colors.black87,
-///   iconColor: Colors.white,
-///   borderColor: Colors.white24,
-/// );
-/// 
-/// // Fully customized
-/// AppAppBar(
-///   title: 'Custom',
-///   titleColor: Colors.blue,
-///   iconColor: Colors.blue,
-///   borderColor: Colors.blue.shade200,
-///   backgroundColor: Colors.blue.shade50,
 /// )

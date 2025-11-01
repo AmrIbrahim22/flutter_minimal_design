@@ -9,8 +9,12 @@ A minimal, production-ready design system for Flutter applications. Build beauti
 
 - 🎯 **Consistent Design Tokens** - Spacing, sizing, colors, typography
 - 📱 **Fully Responsive** - Built with flutter_screenutil for perfect scaling
-- 🧩 **Pre-built Components** - AppBar, Buttons, Form Fields, Text Widget, Screen Wrapper
+- 🧩 **Pre-built Components** - AppBar, Buttons, Form Fields, Text Widget, Screen Wrapper, Rich Text
 - 📝 **CustomAppText** - Simplified text widget with automatic DSTextStyles integration
+- 🎨 **DSRichText** - Rich text widget with clickable links and mixed styles
+- 🎨 **Zero-Config Colors** - DSColors system with ColorSource pattern for easy customization
+- 🎨 **Color Extensions** - Glass effects, shadows, gradients, accessibility helpers
+- 🧭 **Navigation Utils** - Smart back navigation helpers
 - 🎨 **Easy Customization** - Full copyWith support on all components
 - ♿ **Accessible** - Follows WCAG guidelines (44×44 touch targets)
 - 🌍 **RTL Support** - Works seamlessly with Arabic and other RTL languages
@@ -39,7 +43,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_minimal_design: ^1.0.1
+  flutter_minimal_design: ^1.0.2
   flutter_screenutil: ^5.9.0
   flutter_svg: ^2.0.9
 ```
@@ -287,6 +291,296 @@ CustomAppTextFormField(
   labelText: 'Name',
   hintText: 'Enter your name',
   validator: (value) => value!.isEmpty ? 'Required' : null,
+)
+```
+
+### 📝 DSRichText - Rich Text Widget
+
+Create beautiful rich text with multiple styles, clickable links, and mixed formatting:
+
+```dart
+// Simple rich text with different styles
+DSRichText(
+  spans: [
+    DSTextSpan.body('Hello '),
+    DSTextSpan.bold('World', color: Colors.red),
+    DSTextSpan.body('!'),
+  ],
+)
+
+// Clickable links
+DSRichText(
+  spans: [
+    DSTextSpan.body('By continuing, you agree to our '),
+    DSTextSpan.link(
+      'Terms of Service',
+      color: Colors.blue,
+      onTap: () => Navigator.push(context, route),
+    ),
+    DSTextSpan.body(' and '),
+    DSTextSpan.link(
+      'Privacy Policy',
+      onTap: () => Navigator.push(context, route),
+    ),
+  ],
+)
+
+// Using factory constructors
+DSRichText(
+  spans: [
+    DSTextSpan.pageTitle('Welcome!', color: Colors.black),
+    DSTextSpan.body('\n\nThis is '),
+    DSTextSpan.bold('important'),
+    DSTextSpan.body(' information. '),
+    DSTextSpan.italic('Please read carefully.'),
+  ],
+  maxLines: 5,
+  overflow: TextOverflow.ellipsis,
+)
+
+// Pricing display
+DSRichText(
+  spans: [
+    DSTextSpan.caption('\$', color: Colors.grey[600]),
+    DSTextSpan(
+      text: '99',
+      style: DSTextStyles.pageTitle.copyWith(
+        fontSize: 32.sp,
+        fontWeight: FontWeight.w800,
+      ),
+    ),
+    DSTextSpan.caption('.99/month', color: Colors.grey[600]),
+  ],
+)
+```
+
+**Available Factory Constructors:**
+- `DSTextSpan.pageTitle()` - Page title style
+- `DSTextSpan.sectionHeader()` - Section header style
+- `DSTextSpan.subheader()` - Subheader style
+- `DSTextSpan.body()` - Body text style
+- `DSTextSpan.label()` - Label style
+- `DSTextSpan.caption()` - Caption style
+- `DSTextSpan.button()` - Button text style
+- `DSTextSpan.link()` - Clickable link with underline
+- `DSTextSpan.bold()` - Bold text
+- `DSTextSpan.italic()` - Italic text
+- `DSTextSpan.underline()` - Underlined text
+
+### 🎨 DSColors - Zero-Config Color System
+
+Works out-of-the-box with defaults, easily customizable via ColorSource pattern:
+
+```dart
+// Zero-config usage (works immediately)
+Container(color: DSColors.primary)
+Text('Hello', style: TextStyle(color: DSColors.textPrimary))
+
+// Override with predefined palette
+void main() {
+  DSColors.setSource(DSColorPalettes.tealPink);
+  runApp(MyApp());
+}
+
+// Custom color source (override only what you need)
+class AppColors extends ColorSource {
+  @override
+  Color get primary => const Color(0xFF0D9488);
+  
+  @override
+  Color get secondary => const Color(0xFFFF4893);
+  
+  // All other colors inherit defaults
+}
+
+void main() {
+  DSColors.setSource(AppColors());
+  runApp(MyApp());
+}
+```
+
+**Available Color Properties:**
+```dart
+// Primary Colors
+DSColors.primary
+DSColors.primaryLight
+DSColors.primaryDark
+
+// Secondary Colors
+DSColors.secondary
+DSColors.secondaryLight
+
+// Background Colors
+DSColors.background
+DSColors.surface
+DSColors.surfaceVariant
+
+// Text Colors
+DSColors.textPrimary
+DSColors.textSecondary
+DSColors.textTertiary
+DSColors.textDisabled
+DSColors.textOnPrimary
+
+// Border Colors
+DSColors.border
+DSColors.borderFocused
+
+// Status Colors
+DSColors.success
+DSColors.warning
+DSColors.error
+DSColors.info
+
+// Gradients
+DSColors.primaryGradient
+DSColors.headerGradient
+DSColors.progressGradient
+```
+
+**Predefined Palettes:**
+- `DSColorPalettes.defaultPalette` - Default neutral theme
+- `DSColorPalettes.tealPink` - Teal and pink theme
+- `DSColorPalettes.blue` - Blue theme
+- `DSColorPalettes.purple` - Purple theme
+- `DSColorPalettes.green` - Green theme
+
+**Context Extensions:**
+```dart
+Container(
+  color: context.primaryColor,
+  child: Text(
+    'Hello',
+    style: TextStyle(color: context.textColor),
+  ),
+)
+```
+
+### 🎨 Color Extensions
+
+Powerful color manipulation utilities for glass effects, shadows, gradients, and more:
+
+```dart
+// Color manipulation
+DSColors.primary.lighten(0.2)
+DSColors.secondary.darken(0.1)
+DSColors.error.saturate(0.3)
+
+// Glass effects
+Container(
+  decoration: BoxDecoration(
+    color: DSColors.surface.glass(),
+    borderRadius: BorderRadius.circular(20),
+  ),
+)
+// Options: glass(), frosted(), glassLight(), glassDark()
+
+// Shadows
+Container(
+  decoration: BoxDecoration(
+    color: DSColors.surface,
+    boxShadow: DSColors.primary.softShadow(),
+    // Options: softShadow(), mediumShadow(), hardShadow(), 
+    //          coloredShadow(), glowingShadow()
+  ),
+)
+
+// Gradients
+Container(
+  decoration: BoxDecoration(
+    gradient: DSColors.primary.linearGradientTo(DSColors.secondary),
+  ),
+)
+// Options: linearGradientTo(), shimmerGradient(), glassGradient()
+
+// Accessibility
+final bgColor = DSColors.primary;
+final textColor = bgColor.onColor; // Auto white or black
+
+if (bgColor.hasGoodContrast(Colors.white)) {
+  // Use white text
+}
+
+// String to Color
+Container(
+  color: '#0D9488'.toColor(),
+  // or shorter: '#0D9488'.color
+  // Supports: #RGB, #RRGGBB, #AARRGGBB, rgb(), rgba()
+)
+
+// Blend colors
+final blended = DSColors.primary.blend(DSColors.secondary, 0.5);
+```
+
+### 🧭 Navigation Utils
+
+Smart navigation helpers that work with any navigation package:
+
+```dart
+// Default back action (checks if can pop)
+NavigationUtils.defaultBackAction(context)
+
+// Use in AppAppBar
+AppAppBar(
+  title: 'Settings',
+  onBackPressed: () => NavigationUtils.defaultBackAction(context),
+)
+```
+
+### 🔼 AppAppBar Enhancements
+
+Enhanced AppBar with custom leading widget and border control:
+
+```dart
+// Basic usage (with default border)
+AppAppBar(
+  title: 'Settings',
+)
+
+// Without border
+AppAppBar(
+  title: 'Profile',
+  showLeadingBorder: false,
+)
+
+// Custom border color and width
+AppAppBar(
+  title: 'Messages',
+  borderColor: Colors.blue,
+  leadingBorderWidth: 2,
+)
+
+// Custom leading widget
+AppAppBar(
+  title: 'Custom',
+  leadingWidget: Container(
+    decoration: BoxDecoration(
+      color: Colors.blue,
+      shape: BoxShape.circle,
+    ),
+    child: Icon(Icons.close, color: Colors.white),
+  ),
+)
+
+// Hide back button
+AppAppBar(
+  title: 'Home',
+  hideIcon: true,
+)
+```
+
+### 📱 CustomScreen Enhancements
+
+CustomScreen now supports AppBar leading customization:
+
+```dart
+CustomScreen(
+  title: 'Settings',
+  appBarLeadingWidget: CustomLeadingWidget(),
+  showLeadingBorder: false,
+  leadingBorderColor: Colors.blue,
+  leadingBorderWidth: 2,
+  body: Content(),
 )
 ```
 
@@ -852,10 +1146,12 @@ import 'package:flutter_minimal_design/flutter_minimal_design.dart';
 
 ## 📦 What's Included
 
-- ✅ **Foundation**: Spacing, Sizing, Colors, Typography, Border Radius
-- ✅ **Components**: CustomScreen, AppBar, Buttons, Form Fields, CustomAppText
-- ✅ **Utilities**: Spacing widgets, Padding presets, Extensions
-- ✅ **Pre-configured Variants**: 6 button types, 6 form field types, 9 screen types
+- ✅ **Foundation**: Spacing, Sizing, Colors (zero-config with ColorSource), Typography, Border Radius
+- ✅ **Components**: CustomScreen, AppBar, Buttons, Form Fields, CustomAppText, DSRichText
+- ✅ **Color System**: Zero-config DSColors with ColorSource pattern, predefined palettes, color extensions
+- ✅ **Utilities**: Spacing widgets, Padding presets, Color extensions, Navigation utils
+- ✅ **Pre-configured Variants**: 6 button types, 6 form field types, 9 screen types, 5 color palettes
+- ✅ **Color Extensions**: Glass effects, shadows, gradients, accessibility helpers, string parsing
 - ✅ **Complete copyWith**: All components support full customization
 - ✅ **Theme Integration**: Automatic font detection and initialization API
 

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../flutter_minimal_design.dart';
+import '../utils/ds_navigation_utils.dart';
 
 /// CustomScreen - Universal screen wrapper with design system integration
-/// 
+///
 /// Provides consistent layout structure for all app screens with:
 /// - Automatic AppBar integration
 /// - Safe area handling
@@ -24,34 +25,40 @@ class CustomScreen extends StatelessWidget {
   final Color? appBarBackgroundColor;
   final Color? appBarTitleColor;
   final Color? appBarIconColor;
-  
+
+  // NEW: AppBar leading customization
+  final Widget? appBarLeadingWidget;
+  final bool showLeadingBorder;
+  final Color? leadingBorderColor;
+  final double? leadingBorderWidth;
+
   // Screen content
   final Widget body;
   final Widget? bottomSheet;
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
-  
+
   // Layout configuration
   final EdgeInsetsGeometry? padding;
   final bool useSafeArea;
   final bool enableScroll;
   final ScrollPhysics? scrollPhysics;
   final ScrollController? scrollController;
-  
+
   // Screen behavior
   final Color? backgroundColor;
   final bool resizeToAvoidBottomInset;
   final bool extendBody;
   final bool extendBodyBehindAppBar;
-  
+
   // Loading & error states
   final bool isLoading;
   final Widget? loadingWidget;
   final bool hasError;
   final Widget? errorWidget;
   final VoidCallback? onRetry;
-  
+
   // Drawer
   final Widget? drawer;
   final Widget? endDrawer;
@@ -67,6 +74,10 @@ class CustomScreen extends StatelessWidget {
     this.appBarBackgroundColor,
     this.appBarTitleColor,
     this.appBarIconColor,
+    this.appBarLeadingWidget,
+    this.showLeadingBorder = true,
+    this.leadingBorderColor,
+    this.leadingBorderWidth,
     this.bottomSheet,
     this.bottomNavigationBar,
     this.floatingActionButton,
@@ -100,6 +111,10 @@ class CustomScreen extends StatelessWidget {
     Color? appBarBackgroundColor,
     Color? appBarTitleColor,
     Color? appBarIconColor,
+    Widget? appBarLeadingWidget,
+    bool? showLeadingBorder,
+    Color? leadingBorderColor,
+    double? leadingBorderWidth,
     Widget? bottomSheet,
     Widget? bottomNavigationBar,
     Widget? floatingActionButton,
@@ -128,22 +143,30 @@ class CustomScreen extends StatelessWidget {
       hideBackButton: hideBackButton ?? this.hideBackButton,
       onBackPressed: onBackPressed ?? this.onBackPressed,
       appBarEndWidget: appBarEndWidget ?? this.appBarEndWidget,
-      appBarBackgroundColor: appBarBackgroundColor ?? this.appBarBackgroundColor,
+      appBarBackgroundColor:
+          appBarBackgroundColor ?? this.appBarBackgroundColor,
       appBarTitleColor: appBarTitleColor ?? this.appBarTitleColor,
       appBarIconColor: appBarIconColor ?? this.appBarIconColor,
+      appBarLeadingWidget: appBarLeadingWidget ?? this.appBarLeadingWidget,
+      showLeadingBorder: showLeadingBorder ?? this.showLeadingBorder,
+      leadingBorderColor: leadingBorderColor ?? this.leadingBorderColor,
+      leadingBorderWidth: leadingBorderWidth ?? this.leadingBorderWidth,
       bottomSheet: bottomSheet ?? this.bottomSheet,
       bottomNavigationBar: bottomNavigationBar ?? this.bottomNavigationBar,
       floatingActionButton: floatingActionButton ?? this.floatingActionButton,
-      floatingActionButtonLocation: floatingActionButtonLocation ?? this.floatingActionButtonLocation,
+      floatingActionButtonLocation:
+          floatingActionButtonLocation ?? this.floatingActionButtonLocation,
       padding: padding ?? this.padding,
       useSafeArea: useSafeArea ?? this.useSafeArea,
       enableScroll: enableScroll ?? this.enableScroll,
       scrollPhysics: scrollPhysics ?? this.scrollPhysics,
       scrollController: scrollController ?? this.scrollController,
       backgroundColor: backgroundColor ?? this.backgroundColor,
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? this.resizeToAvoidBottomInset,
+      resizeToAvoidBottomInset:
+          resizeToAvoidBottomInset ?? this.resizeToAvoidBottomInset,
       extendBody: extendBody ?? this.extendBody,
-      extendBodyBehindAppBar: extendBodyBehindAppBar ?? this.extendBodyBehindAppBar,
+      extendBodyBehindAppBar:
+          extendBodyBehindAppBar ?? this.extendBodyBehindAppBar,
       isLoading: isLoading ?? this.isLoading,
       loadingWidget: loadingWidget ?? this.loadingWidget,
       hasError: hasError ?? this.hasError,
@@ -161,11 +184,16 @@ class CustomScreen extends StatelessWidget {
           ? AppAppBar(
               title: title,
               hideIcon: hideBackButton,
-              onBackPressed: onBackPressed,
+              onBackPressed: onBackPressed ??
+                  () => NavigationUtils.defaultBackAction(context),
               endWidget: appBarEndWidget,
               backgroundColor: appBarBackgroundColor,
               titleColor: appBarTitleColor,
               iconColor: appBarIconColor,
+              leadingWidget: appBarLeadingWidget,
+              showLeadingBorder: showLeadingBorder,
+              borderColor: leadingBorderColor,
+              leadingBorderWidth: leadingBorderWidth,
             )
           : null,
       body: _buildBody(context),

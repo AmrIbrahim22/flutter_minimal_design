@@ -1,468 +1,385 @@
 import 'package:flutter/material.dart';
 
-/// DSColors - Design System Colors
-///
-/// Provides default colors that can be overridden by package users.
-/// Uses a configurable color scheme pattern.
-///
+/// DSColors - Zero-config static color system
+/// 
+/// Works out-of-the-box with defaults, easily overridable via AppColors.
+/// No initialization, no setup, no runtime registration.
+/// 
 /// Usage:
 /// ```dart
-/// // Use defaults
+/// // Use defaults (zero-config)
 /// Container(color: DSColors.primary)
-///
-/// // Initialize with custom colors
-/// DSColors.initialize(
-///   primary: Color(0xFF0D9488),
-///   secondary: Color(0xFFFF4893),
-/// );
-///
-/// // Or use theme-based approach
-/// DSColors.fromTheme(context)
+/// 
+/// // Override all colors via AppColors
+/// class AppColors extends ColorSource {
+///   @override Color get primary => Color(0xFF0D9488);
+///   @override Color get secondary => Color(0xFFFF4893);
+///   // ... override only what you need
+/// }
 /// ```
 class DSColors {
   DSColors._();
 
-  // Singleton instance
-  static DSColorScheme _scheme = DSColorScheme.defaultScheme();
+  // Reference to color source (defaults to DefaultColors)
+  static ColorSource _source = DefaultColors();
 
-  /// Initialize with custom colors (call once at app start)
-  static void initialize({
-    Color? primary,
-    Color? primaryLight,
-    Color? secondary,
-    Color? background,
-    Color? surface,
-    Color? error,
-    Color? success,
-    Color? warning,
-    Color? textPrimary,
-    Color? textSecondary,
-    Color? border,
-    LinearGradient? primaryGradient,
-    LinearGradient? headerGradient,
-  }) {
-    _scheme = DSColorScheme(
-      primary: primary ?? _scheme.primary,
-      primaryLight: primaryLight ?? _scheme.primaryLight,
-      secondary: secondary ?? _scheme.secondary,
-      background: background ?? _scheme.background,
-      surface: surface ?? _scheme.surface,
-      error: error ?? _scheme.error,
-      success: success ?? _scheme.success,
-      warning: warning ?? _scheme.warning,
-      textPrimary: textPrimary ?? _scheme.textPrimary,
-      textSecondary: textSecondary ?? _scheme.textSecondary,
-      border: border ?? _scheme.border,
-      primaryGradient: primaryGradient ?? _scheme.primaryGradient,
-      headerGradient: headerGradient ?? _scheme.headerGradient,
-    );
+  /// Override colors by providing your own ColorSource implementation
+  /// Call once before runApp() if needed
+  static void setSource(ColorSource source) {
+    _source = source;
   }
 
-  /// Reset to default colors
-  static void resetToDefaults() {
-    _scheme = DSColorScheme.defaultScheme();
-  }
+  // ========== PRIMARY COLORS ==========
+  static Color get primary => _source.primary;
+  static Color get primaryLight => _source.primaryLight;
+  static Color get primaryDark => _source.primaryDark;
 
-  /// Get current color scheme
-  static DSColorScheme get scheme => _scheme;
+  // ========== SECONDARY COLORS ==========
+  static Color get secondary => _source.secondary;
+  static Color get secondaryLight => _source.secondaryLight;
 
-  // Primary Colors
-  static Color get primary => _scheme.primary;
-  static Color get primaryLight => _scheme.primaryLight;
-  static Color get primaryDark => _scheme.primaryDark;
+  // ========== BACKGROUND COLORS ==========
+  static Color get background => _source.background;
+  static Color get surface => _source.surface;
+  static Color get surfaceVariant => _source.surfaceVariant;
 
-  // Secondary Colors
-  static Color get secondary => _scheme.secondary;
-  static Color get secondaryLight => _scheme.secondaryLight;
+  // ========== TEXT COLORS ==========
+  static Color get textPrimary => _source.textPrimary;
+  static Color get textSecondary => _source.textSecondary;
+  static Color get textTertiary => _source.textTertiary;
+  static Color get textDisabled => _source.textDisabled;
+  static Color get textOnPrimary => _source.textOnPrimary;
 
-  // Background Colors
-  static Color get background => _scheme.background;
-  static Color get surface => _scheme.surface;
-  static Color get surfaceVariant => _scheme.surfaceVariant;
+  // ========== BORDER COLORS ==========
+  static Color get border => _source.border;
+  static Color get borderFocused => _source.borderFocused;
 
-  // Text Colors
-  static Color get textPrimary => _scheme.textPrimary;
-  static Color get textSecondary => _scheme.textSecondary;
-  static Color get textTertiary => _scheme.textTertiary;
-  static Color get textDisabled => _scheme.textDisabled;
-  static Color get textOnPrimary => _scheme.textOnPrimary;
+  // ========== STATUS COLORS ==========
+  static Color get success => _source.success;
+  static Color get warning => _source.warning;
+  static Color get error => _source.error;
+  static Color get info => _source.info;
 
-  // Border Colors
-  static Color get border => _scheme.border;
-  static Color get borderFocused => _scheme.borderFocused;
+  // ========== SPECIAL COLORS ==========
+  static Color get disabled => _source.disabled;
+  static Color get overlay => _source.overlay;
+  static Color get divider => _source.divider;
 
-  // Status Colors
-  static Color get success => _scheme.success;
-  static Color get warning => _scheme.warning;
-  static Color get error => _scheme.error;
-  static Color get info => _scheme.info;
-
-  // Special Colors
-  static Color get disabled => _scheme.disabled;
-  static Color get overlay => _scheme.overlay;
-  static Color get divider => _scheme.divider;
-
-  // Gradients
-  static LinearGradient get primaryGradient => _scheme.primaryGradient;
-  static LinearGradient get headerGradient => _scheme.headerGradient;
-  static LinearGradient get progressGradient => _scheme.progressGradient;
-
-  // Context-based access (gets from Theme if available)
-  static DSColorScheme fromContext(BuildContext context) {
-    final theme = Theme.of(context);
-    return DSColorScheme(
-      primary: theme.primaryColor,
-      secondary: theme.colorScheme.secondary,
-      background: theme.scaffoldBackgroundColor,
-      surface: theme.cardColor,
-      error: theme.colorScheme.error,
-      textPrimary: theme.textTheme.bodyLarge?.color ?? _scheme.textPrimary,
-      textSecondary: theme.textTheme.bodyMedium?.color ?? _scheme.textSecondary,
-      border: theme.buttonTheme.colorScheme?.outline ?? _scheme.border,
-      success: theme.bannerTheme.surfaceTintColor ?? _scheme.success,
-      warning: theme.bannerTheme.surfaceTintColor ?? _scheme.warning,
-    );
-  }
+  // ========== GRADIENTS ==========
+  static LinearGradient get primaryGradient => _source.primaryGradient;
+  static LinearGradient get headerGradient => _source.headerGradient;
+  static LinearGradient get progressGradient => _source.progressGradient;
 }
 
-/// DSColorScheme - Color scheme container
-class DSColorScheme {
-  final Color primary;
-  final Color primaryLight;
-  final Color primaryDark;
-  final Color secondary;
-  final Color secondaryLight;
-  final Color background;
-  final Color surface;
-  final Color surfaceVariant;
-  final Color textPrimary;
-  final Color textSecondary;
-  final Color textTertiary;
-  final Color textDisabled;
-  final Color textOnPrimary;
-  final Color border;
-  final Color borderFocused;
-  final Color success;
-  final Color warning;
-  final Color error;
-  final Color info;
-  final Color disabled;
-  final Color overlay;
-  final Color divider;
-  final LinearGradient primaryGradient;
-  final LinearGradient headerGradient;
-  final LinearGradient progressGradient;
+/// ColorSource - Abstract interface for color providers
+/// 
+/// Implement this to create your custom color set.
+/// All colors have default implementations for convenience.
+abstract class ColorSource {
+  // Primary Colors
+  Color get primary => const Color(0xFF6366F1);
+  Color get primaryLight => const Color(0xFF818CF8);
+  Color get primaryDark => const Color(0xFF4F46E5);
 
-  DSColorScheme({
-    required this.primary,
-    Color? primaryLight,
-    Color? primaryDark,
-    required this.secondary,
-    Color? secondaryLight,
-    required this.background,
-    required this.surface,
-    Color? surfaceVariant,
-    required this.textPrimary,
-    required this.textSecondary,
-    Color? textTertiary,
-    Color? textDisabled,
-    Color? textOnPrimary,
-    required this.border,
-    Color? borderFocused,
-    required this.success,
-    required this.warning,
-    required this.error,
-    Color? info,
-    Color? disabled,
-    Color? overlay,
-    Color? divider,
-    LinearGradient? primaryGradient,
-    LinearGradient? headerGradient,
-    LinearGradient? progressGradient,
-  }) : primaryLight = primaryLight ?? _lighten(primary, 0.2),
-       primaryDark = primaryDark ?? _darken(primary, 0.2),
-       secondaryLight = secondaryLight ?? _lighten(secondary, 0.2),
-       surfaceVariant = surfaceVariant ?? _lighten(surface, 0.05),
-       textTertiary = textTertiary ?? textSecondary.withOpacity(0.6),
-       textDisabled = textDisabled ?? textSecondary.withOpacity(0.38),
-       textOnPrimary = textOnPrimary ?? Colors.white,
-       borderFocused = borderFocused ?? primary,
-       info = info ?? const Color(0xFF74B9FF),
-       disabled = disabled ?? const Color(0xFFCED7E3),
-       overlay = overlay ?? Colors.black.withOpacity(0.5),
-       divider = divider ?? border.withOpacity(0.12),
-       primaryGradient =
-           primaryGradient ??
-           LinearGradient(
-             begin: Alignment.topCenter,
-             end: Alignment.bottomCenter,
-             colors: [primaryLight ?? _lighten(primary, 0.2), primary],
-           ),
-       headerGradient =
-           headerGradient ??
-           LinearGradient(
-             begin: const Alignment(-0.15, -1.0),
-             end: const Alignment(1.0, 1.0),
-             colors: [primary, secondary],
-           ),
-       progressGradient =
-           progressGradient ??
-           LinearGradient(
-             colors: [primaryLight ?? _lighten(primary, 0.2), primary],
-             begin: Alignment.topLeft,
-             end: Alignment.bottomRight,
-           );
+  // Secondary Colors
+  Color get secondary => const Color(0xFFEC4899);
+  Color get secondaryLight => const Color(0xFFF472B6);
 
-  /// Default color scheme (your current app colors)
-  factory DSColorScheme.defaultScheme() {
-    return DSColorScheme(
-      // Primary
-      primary: Color(0xFF0D9488),
-      primaryLight: Color(0xFF4FBFB4),
-      primaryDark: Color(0xFF0A7A72),
+  // Background Colors
+  Color get background => const Color(0xFFF9FAFB);
+  Color get surface => const Color(0xFFFFFFFF);
+  Color get surfaceVariant => const Color(0xFFF3F4F6);
 
-      // Secondary
-      secondary: Color(0xFFFF4893),
-      secondaryLight: Color(0xFFFF78B0),
+  // Text Colors
+  Color get textPrimary => const Color(0xFF1F2937);
+  Color get textSecondary => const Color(0xFF6B7280);
+  Color get textTertiary => const Color(0xFF9CA3AF);
+  Color get textDisabled => const Color(0xFFD1D5DB);
+  Color get textOnPrimary => const Color(0xFFFFFFFF);
 
-      // Background
-      background: Color(0xFFF2F8F7),
-      surface: Color(0xFFF6FEFD),
-      surfaceVariant: Color(0xFFFFFFFF),
+  // Border Colors
+  Color get border => const Color(0xFFD1D5DB);
+  Color get borderFocused => primary;
 
-      // Text
-      textPrimary: Color(0xFF424B59),
-      textSecondary: Color(0xFF6E7C91),
-      textTertiary: Color(0xFFB5BCC4),
-      textOnPrimary: Color(0xFFFFFFFF),
+  // Status Colors
+  Color get success => const Color(0xFF10B981);
+  Color get warning => const Color(0xFFF59E0B);
+  Color get error => const Color(0xFFEF4444);
+  Color get info => const Color(0xFF3B82F6);
 
-      // Border
-      border: Color(0xFFCED7E3),
-      borderFocused: Color(0xFF0D9488),
+  // Special Colors
+  Color get disabled => const Color(0xFFE5E7EB);
+  Color get overlay => Colors.black.withOpacity(0.5);
+  Color get divider => const Color(0xFFE5E7EB);
 
-      // Status
-      success: Color(0xFF0D9488),
-      warning: Color(0xFFF9C323),
-      error: Color(0xFFFF6B6B),
-      info: Color(0xFF74B9FF),
-
-      // Special
-      disabled: Color(0xFFCED7E3),
-
-      // Gradients
-      primaryGradient: LinearGradient(
+  // Gradients
+  LinearGradient get primaryGradient => LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [Color(0xFF4FBFB4), Color(0xFF0D9488)],
-      ),
-      headerGradient: LinearGradient(
+        colors: [primaryLight, primary],
+      );
+
+  LinearGradient get headerGradient => LinearGradient(
+        begin: const Alignment(-0.15, -1.0),
+        end: const Alignment(1.0, 1.0),
+        colors: [primary, secondary],
+      );
+
+  LinearGradient get progressGradient => LinearGradient(
+        colors: [primaryLight, primary],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
+}
+
+/// DefaultColors - Package default color scheme
+class DefaultColors extends ColorSource {
+  // Uses all defaults from ColorSource
+  // No overrides needed for neutral theme
+}
+
+/// Example: TealPinkColors - Custom color scheme
+class TealPinkColors extends ColorSource {
+  @override
+  Color get primary => const Color(0xFF0D9488);
+
+  @override
+  Color get primaryLight => const Color(0xFF4FBFB4);
+
+  @override
+  Color get primaryDark => const Color(0xFF0A7A72);
+
+  @override
+  Color get secondary => const Color(0xFFFF4893);
+
+  @override
+  Color get secondaryLight => const Color(0xFFFF78B0);
+
+  @override
+  Color get background => const Color(0xFFF2F8F7);
+
+  @override
+  Color get surface => const Color(0xFFF6FEFD);
+
+  @override
+  Color get surfaceVariant => const Color(0xFFFFFFFF);
+
+  @override
+  Color get textPrimary => const Color(0xFF424B59);
+
+  @override
+  Color get textSecondary => const Color(0xFF6E7C91);
+
+  @override
+  Color get textTertiary => const Color(0xFFB5BCC4);
+
+  @override
+  Color get border => const Color(0xFFCED7E3);
+
+  @override
+  Color get success => const Color(0xFF0D9488);
+
+  @override
+  Color get warning => const Color(0xFFF9C323);
+
+  @override
+  Color get error => const Color(0xFFFF6B6B);
+
+  @override
+  Color get info => const Color(0xFF74B9FF);
+
+  @override
+  LinearGradient get headerGradient => const LinearGradient(
         begin: Alignment(-0.15, -1.0),
         end: Alignment(1.0, 1.0),
         colors: [Color(0xFF0D9488), Color(0xFFFAC642)],
-      ),
-    );
-  }
-
-  /// Create light theme variant
-  factory DSColorScheme.light({Color? primary, Color? secondary}) {
-    final p = primary ?? const Color(0xFF0D9488);
-    final s = secondary ?? const Color(0xFFFF4893);
-
-    return DSColorScheme(
-      primary: p,
-      secondary: s,
-      background: const Color(0xFFF2F8F7),
-      surface: const Color(0xFFFFFFFF),
-      textPrimary: const Color(0xFF424B59),
-      textSecondary: const Color(0xFF6E7C91),
-      border: const Color(0xFFCED7E3),
-      success: p,
-      warning: const Color(0xFFF9C323),
-      error: const Color(0xFFFF6B6B),
-    );
-  }
-
-  /// Create dark theme variant
-  factory DSColorScheme.dark({Color? primary, Color? secondary}) {
-    final p = primary ?? const Color(0xFF4FBFB4);
-    final s = secondary ?? const Color(0xFFFF78B0);
-
-    return DSColorScheme(
-      primary: p,
-      secondary: s,
-      background: const Color(0xFF121212),
-      surface: const Color(0xFF1E1E1E),
-      textPrimary: const Color(0xFFFFFFFF),
-      textSecondary: const Color(0xFFB0B0B0),
-      border: const Color(0xFF3A3A3A),
-      success: p,
-      warning: const Color(0xFFFAC642),
-      error: const Color(0xFFFF8A8A),
-    );
-  }
-
-  /// copyWith method for customization
-  DSColorScheme copyWith({
-    Color? primary,
-    Color? primaryLight,
-    Color? primaryDark,
-    Color? secondary,
-    Color? secondaryLight,
-    Color? background,
-    Color? surface,
-    Color? surfaceVariant,
-    Color? textPrimary,
-    Color? textSecondary,
-    Color? textTertiary,
-    Color? textDisabled,
-    Color? textOnPrimary,
-    Color? border,
-    Color? borderFocused,
-    Color? success,
-    Color? warning,
-    Color? error,
-    Color? info,
-    Color? disabled,
-    Color? overlay,
-    Color? divider,
-    LinearGradient? primaryGradient,
-    LinearGradient? headerGradient,
-    LinearGradient? progressGradient,
-  }) {
-    return DSColorScheme(
-      primary: primary ?? this.primary,
-      primaryLight: primaryLight ?? this.primaryLight,
-      primaryDark: primaryDark ?? this.primaryDark,
-      secondary: secondary ?? this.secondary,
-      secondaryLight: secondaryLight ?? this.secondaryLight,
-      background: background ?? this.background,
-      surface: surface ?? this.surface,
-      surfaceVariant: surfaceVariant ?? this.surfaceVariant,
-      textPrimary: textPrimary ?? this.textPrimary,
-      textSecondary: textSecondary ?? this.textSecondary,
-      textTertiary: textTertiary ?? this.textTertiary,
-      textDisabled: textDisabled ?? this.textDisabled,
-      textOnPrimary: textOnPrimary ?? this.textOnPrimary,
-      border: border ?? this.border,
-      borderFocused: borderFocused ?? this.borderFocused,
-      success: success ?? this.success,
-      warning: warning ?? this.warning,
-      error: error ?? this.error,
-      info: info ?? this.info,
-      disabled: disabled ?? this.disabled,
-      overlay: overlay ?? this.overlay,
-      divider: divider ?? this.divider,
-      primaryGradient: primaryGradient ?? this.primaryGradient,
-      headerGradient: headerGradient ?? this.headerGradient,
-      progressGradient: progressGradient ?? this.progressGradient,
-    );
-  }
-
-  // Helper methods to lighten/darken colors
-  static Color _lighten(Color color, double amount) {
-    final hsl = HSLColor.fromColor(color);
-    final lightness = (hsl.lightness + amount).clamp(0.0, 1.0);
-    return hsl.withLightness(lightness).toColor();
-  }
-
-  static Color _darken(Color color, double amount) {
-    final hsl = HSLColor.fromColor(color);
-    final lightness = (hsl.lightness - amount).clamp(0.0, 1.0);
-    return hsl.withLightness(lightness).toColor();
-  }
+      );
 }
 
-/// Extension on BuildContext for easy color access
-extension DSColorsContext on BuildContext {
-  DSColorScheme get colors => DSColors.scheme;
-
-  Color get primaryColor => DSColors.primary;
-  Color get secondaryColor => DSColors.secondary;
-  Color get backgroundColor => DSColors.background;
-  Color get textColor => DSColors.textPrimary;
-}
-
-/// Predefined color palettes for common use cases
+/// Predefined color palettes
 class DSColorPalettes {
   DSColorPalettes._();
 
-  /// Green/Teal theme (default)
-  static DSColorScheme get teal => DSColorScheme.defaultScheme();
-
-  /// Blue theme
-  static DSColorScheme get blue => DSColorScheme.light(
-    primary: const Color(0xFF2196F3),
-    secondary: const Color(0xFFFF9800),
-  );
-
-  /// Purple theme
-  static DSColorScheme get purple => DSColorScheme.light(
-    primary: const Color(0xFF9C27B0),
-    secondary: const Color(0xFF00BCD4),
-  );
-
-  /// Red theme
-  static DSColorScheme get red => DSColorScheme.light(
-    primary: const Color(0xFFE91E63),
-    secondary: const Color(0xFF3F51B5),
-  );
-
-  /// Orange theme
-  static DSColorScheme get orange => DSColorScheme.light(
-    primary: const Color(0xFFFF5722),
-    secondary: const Color(0xFF4CAF50),
-  );
-
-  /// Dark teal theme
-  static DSColorScheme get tealDark => DSColorScheme.dark(
-    primary: const Color(0xFF4FBFB4),
-    secondary: const Color(0xFFFF78B0),
-  );
+  static ColorSource get defaultPalette => DefaultColors();
+  static ColorSource get tealPink => TealPinkColors();
+  static ColorSource get blue => BlueColors();
+  static ColorSource get purple => PurpleColors();
+  static ColorSource get green => GreenColors();
 }
 
-/// Usage Examples:
-/// 
-/// // 1. Use default colors (in package)
-/// Container(
-///   color: DSColors.primary,
-///   child: Text(
-///     'Hello',
-///     style: TextStyle(color: DSColors.textOnPrimary),
-///   ),
-/// )
-/// 
-/// // 2. Initialize with custom colors (in app's main.dart)
+class BlueColors extends ColorSource {
+  @override
+  Color get primary => const Color(0xFF2196F3);
+
+  @override
+  Color get secondary => const Color(0xFFFF9800);
+}
+
+class PurpleColors extends ColorSource {
+  @override
+  Color get primary => const Color(0xFF9C27B0);
+
+  @override
+  Color get secondary => const Color(0xFF00BCD4);
+}
+
+class GreenColors extends ColorSource {
+  @override
+  Color get primary => const Color(0xFF4CAF50);
+
+  @override
+  Color get secondary => const Color(0xFFFF9800);
+}
+
+/// Extension on BuildContext for convenient color access
+extension DSColorsContext on BuildContext {
+  Color get primaryColor => DSColors.primary;
+  Color get secondaryColor => DSColors.secondary;
+  Color get backgroundColor => DSColors.background;
+  Color get surfaceColor => DSColors.surface;
+  Color get textColor => DSColors.textPrimary;
+  Color get borderColor => DSColors.border;
+}
+
+/// ============================================================================
+/// USAGE EXAMPLES
+/// ============================================================================
+
+/// Example 1: Zero-config (use defaults)
+/// ```dart
 /// void main() {
-///   DSColors.initialize(
-///     primary: Color(0xFF0D9488),
-///     secondary: Color(0xFFFF4893),
-///     background: Color(0xFFF2F8F7),
-///   );
 ///   runApp(MyApp());
 /// }
 /// 
-/// // 3. Use predefined palettes
-/// DSColors.initialize(scheme: DSColorPalettes.blue);
+/// class MyApp extends StatelessWidget {
+///   @override
+///   Widget build(BuildContext context) {
+///     return MaterialApp(
+///       home: Scaffold(
+///         body: Container(
+///           color: DSColors.primary, // Works out-of-the-box!
+///         ),
+///       ),
+///     );
+///   }
+/// }
+/// ```
+
+/// Example 2: Override with predefined palette
+/// ```dart
+/// void main() {
+///   DSColors.setSource(DSColorPalettes.tealPink);
+///   runApp(MyApp());
+/// }
+/// ```
+
+/// Example 3: Custom AppColors (override only what you need)
+/// ```dart
+/// class AppColors extends ColorSource {
+///   @override
+///   Color get primary => const Color(0xFF0D9488);
+///   
+///   @override
+///   Color get secondary => const Color(0xFFFF4893);
+///   
+///   // All other colors inherit from ColorSource defaults
+/// }
 /// 
-/// // 4. Context extension
-/// Container(
-///   color: context.primaryColor,
-/// )
+/// void main() {
+///   DSColors.setSource(AppColors());
+///   runApp(MyApp());
+/// }
+/// ```
+
+/// Example 4: Override all colors
+/// ```dart
+/// class AppColors extends ColorSource {
+///   @override Color get primary => const Color(0xFF0D9488);
+///   @override Color get primaryLight => const Color(0xFF4FBFB4);
+///   @override Color get primaryDark => const Color(0xFF0A7A72);
+///   @override Color get secondary => const Color(0xFFFF4893);
+///   @override Color get background => const Color(0xFFF2F8F7);
+///   @override Color get surface => const Color(0xFFF6FEFD);
+///   @override Color get textPrimary => const Color(0xFF424B59);
+///   @override Color get success => const Color(0xFF0D9488);
+///   @override Color get warning => const Color(0xFFF9C323);
+///   @override Color get error => const Color(0xFFFF6B6B);
+///   // ... override all colors
+/// }
+/// ```
+
+/// Example 5: Multi-tenant support (dynamic switching)
+/// ```dart
+/// class TenantColorManager {
+///   static ColorSource getColorsForTenant(String tenantId) {
+///     switch (tenantId) {
+///       case 'tenant_a':
+///         return TenantAColors();
+///       case 'tenant_b':
+///         return TenantBColors();
+///       default:
+///         return DefaultColors();
+///     }
+///   }
+/// }
 /// 
-/// // 5. Use in widgets with copyWith
-/// final customButton = CustomButton(
-///   label: 'Click',
-///   onPressed: () {},
-/// ).copyWith(
-///   backgroundColor: DSColors.secondary,
-/// );
+/// void onTenantLogin(String tenantId) {
+///   DSColors.setSource(TenantColorManager.getColorsForTenant(tenantId));
+///   // Trigger rebuild to reflect changes
+/// }
+/// ```
+
+/// Example 6: Scheduled theme updates
+/// ```dart
+/// class ScheduledThemeManager {
+///   static void applyScheduledTheme() {
+///     final hour = DateTime.now().hour;
+///     
+///     if (hour >= 6 && hour < 12) {
+///       DSColors.setSource(MorningColors());
+///     } else if (hour >= 12 && hour < 18) {
+///       DSColors.setSource(AfternoonColors());
+///     } else {
+///       DSColors.setSource(EveningColors());
+///     }
+///   }
+/// }
 /// 
-/// // 6. Create custom scheme
-/// final myScheme = DSColorScheme.light(
-///   primary: Color(0xFF0D9488),
-///   secondary: Color(0xFFFF4893),
-/// ).copyWith(
-///   success: Color(0xFF00C853),
-/// );
+/// void main() {
+///   ScheduledThemeManager.applyScheduledTheme();
+///   
+///   // Update every hour
+///   Timer.periodic(Duration(hours: 1), (_) {
+///     ScheduledThemeManager.applyScheduledTheme();
+///   });
+///   
+///   runApp(MyApp());
+/// }
+/// ```
+
+/// Example 7: Backend-driven colors
+/// ```dart
+/// class BackendColorSource extends ColorSource {
+///   final Map<String, dynamic> _colorsFromBackend;
+///   
+///   BackendColorSource(this._colorsFromBackend);
+///   
+///   @override
+///   Color get primary => _parseColor(_colorsFromBackend['primary']);
+///   
+///   @override
+///   Color get secondary => _parseColor(_colorsFromBackend['secondary']);
+///   
+///   Color _parseColor(dynamic value) {
+///     if (value is String) {
+///       return Color(int.parse(value.replaceAll('#', ''), radix: 16));
+///     }
+///     return super.primary; // Fallback
+///   }
+/// }
 /// 
-/// DSColors.initialize(scheme: myScheme);
+/// Future<void> loadBackendColors() async {
+///   final response = await api.fetchColors();
+///   DSColors.setSource(BackendColorSource(response.data));
+/// }
+/// ```
