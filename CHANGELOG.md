@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.5] - 2025-11-01
+### Fixed
+- **CustomScreen** - Hot fix applied to custom Screen component
+
+### Fixed
+- **CustpmAppBar** - Hot fix applied to custom AppBar component
 ## [1.0.4] - 2025-11-01
 
 ### Fixed
