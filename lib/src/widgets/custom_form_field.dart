@@ -6,9 +6,46 @@ import 'package:flutter_svg/svg.dart';
 import '../../flutter_minimal_design.dart';
 import '../foundation/ds_colors.dart';
 
-/// CustomFormField with Design System Integration
-class CustomFormField extends StatelessWidget {
+/// Label position options
+enum LabelPosition {
+  /// Label appears above the form field (recommended)
+  above,
+
+  /// Label floats inside the form field (Material Design style)
+  floating,
+}
+
+/// A highly customizable form field with design system integration
+///
+/// All styling parameters are OPTIONAL - sensible defaults are provided
+/// from the design system or fallback values.
+///
+/// Features:
+/// - Two label positioning modes (above or floating)
+/// - Automatic password visibility toggle with dual icons
+/// - Full design system integration
+/// - SVG icon support
+///
+/// Basic Usage:
+/// ```dart
+/// CustomFormField(
+///   labelText: 'Email',
+///   hintText: 'Enter your email',
+/// )
+/// ```
+///
+/// Password with auto-toggle:
+/// ```dart
+/// CustomFormField(
+///   labelText: 'Password',
+///   obscureText: true,
+///   suffixIconPath: 'assets/icons/eye_closed.svg',
+///   suffixIconPathAlt: 'assets/icons/eye_open.svg', // Enables auto-toggle
+/// )
+/// ```
+class CustomFormField extends StatefulWidget {
   final String? labelText;
+  final LabelPosition labelPosition;
   final String? hintText;
   final String? helperText;
   final String? errorText;
@@ -24,6 +61,10 @@ class CustomFormField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? prefixIconPath;
   final String? suffixIconPath;
+
+  /// Alternate suffix icon (for password toggle)
+  /// When provided with suffixIconPath, enables automatic visibility toggle
+  final String? suffixIconPathAlt;
   final Color? prefixIconColor;
   final Color? suffixIconColor;
   final VoidCallback? onSuffixIconTap;
@@ -50,6 +91,7 @@ class CustomFormField extends StatelessWidget {
   const CustomFormField({
     super.key,
     this.labelText,
+    this.labelPosition = LabelPosition.above,
     this.hintText,
     this.helperText,
     this.errorText,
@@ -65,6 +107,7 @@ class CustomFormField extends StatelessWidget {
     this.suffixIcon,
     this.prefixIconPath,
     this.suffixIconPath,
+    this.suffixIconPathAlt,
     this.prefixIconColor,
     this.suffixIconColor,
     this.onSuffixIconTap,
@@ -92,6 +135,7 @@ class CustomFormField extends StatelessWidget {
   /// Complete copyWith method
   CustomFormField copyWith({
     String? labelText,
+    LabelPosition? labelPosition,
     String? hintText,
     String? helperText,
     String? errorText,
@@ -107,6 +151,7 @@ class CustomFormField extends StatelessWidget {
     Widget? suffixIcon,
     String? prefixIconPath,
     String? suffixIconPath,
+    String? suffixIconPathAlt,
     Color? prefixIconColor,
     Color? suffixIconColor,
     VoidCallback? onSuffixIconTap,
@@ -132,6 +177,7 @@ class CustomFormField extends StatelessWidget {
   }) {
     return CustomFormField(
       labelText: labelText ?? this.labelText,
+      labelPosition: labelPosition ?? this.labelPosition,
       hintText: hintText ?? this.hintText,
       helperText: helperText ?? this.helperText,
       errorText: errorText ?? this.errorText,
@@ -147,6 +193,7 @@ class CustomFormField extends StatelessWidget {
       suffixIcon: suffixIcon ?? this.suffixIcon,
       prefixIconPath: prefixIconPath ?? this.prefixIconPath,
       suffixIconPath: suffixIconPath ?? this.suffixIconPath,
+      suffixIconPathAlt: suffixIconPathAlt ?? this.suffixIconPathAlt,
       prefixIconColor: prefixIconColor ?? this.prefixIconColor,
       suffixIconColor: suffixIconColor ?? this.suffixIconColor,
       onSuffixIconTap: onSuffixIconTap ?? this.onSuffixIconTap,
@@ -173,105 +220,199 @@ class CustomFormField extends StatelessWidget {
   }
 
   @override
+  State<CustomFormField> createState() => _CustomFormFieldState();
+}
+
+class _CustomFormFieldState extends State<CustomFormField> {
+  // Internal state for password visibility toggle
+  late bool _obscureText;
+
+  // Check if auto-toggle is enabled (both icon paths provided)
+  bool get _hasAutoToggle =>
+      widget.obscureText &&
+      widget.suffixIconPath != null &&
+      widget.suffixIconPathAlt != null;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.obscureText;
+  }
+
+  @override
+  void didUpdateWidget(CustomFormField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.obscureText != oldWidget.obscureText) {
+      _obscureText = widget.obscureText;
+    }
+  }
+
+  /// Toggle password visibility
+  void _toggleObscureText() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+    // Call user callback if provided
+    widget.onSuffixIconTap?.call();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Default values from design system
-    final defaultContentPadding = contentPadding ?? DSEdgeInsets.formField;
-    final defaultBorderRadius = borderRadius ?? DSSize.radiusMd;
-    final defaultBorderColor = borderColor ??  DSColors.border;
-    final defaultFocusedBorderColor = focusedBorderColor ?? const Color(0xFF1A4220);
-    final defaultErrorBorderColor = errorBorderColor ?? const Color(0xFFDC3545);
-    final defaultFillColor = fillColor ?? Colors.white;
+    final defaultContentPadding =
+        widget.contentPadding ?? DSEdgeInsets.formField;
+    final defaultBorderRadius = widget.borderRadius ?? DSSize.radiusMd;
+    final defaultBorderColor = widget.borderColor ?? DSColors.border;
+    final defaultFocusedBorderColor =
+        widget.focusedBorderColor ?? DSColors.border;
+    final defaultErrorBorderColor =
+        widget.errorBorderColor ?? const Color(0xFFDC3545);
+    final defaultFillColor = widget.fillColor ?? Colors.white;
 
-    return TextFormField(
-      controller: controller,
-      focusNode: focusNode,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      enabled: enabled,
-      readOnly: readOnly,
-      maxLines: obscureText ? 1 : maxLines,
-      minLines: minLines,
-      maxLength: maxLength,
-      onChanged: onChanged,
-      onFieldSubmitted: onSubmitted,
-      onTap: onTap,
-      validator: validator,
-      inputFormatters: inputFormatters,
-      textCapitalization: textCapitalization,
-      autofocus: autofocus,
-      style: textStyle ?? DSTextStyles.formField,
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        helperText: helperText,
-        errorText: errorText,
-        labelStyle: labelStyle ?? DSTextStyles.label.copyWith(
-          color: const Color(0xff6B7280),
-        ),
-        hintStyle: hintStyle ?? DSTextStyles.hint.copyWith(
-          color: const Color(0xff9CA3AF),
-        ),
-        errorStyle: errorStyle ?? DSTextStyles.error.copyWith(
-          color: defaultErrorBorderColor,
-        ),
-        filled: true,
-        fillColor: defaultFillColor,
-        contentPadding: defaultContentPadding,
-        
-        // Prefix icon
-        prefixIcon: _buildIcon(
-          widget: prefixIcon,
-          iconPath: prefixIconPath,
-          iconColor: prefixIconColor,
-          onTap: onPrefixIconTap,
-        ),
-        
-        // Suffix icon
-        suffixIcon: _buildIcon(
-          widget: suffixIcon,
-          iconPath: suffixIconPath,
-          iconColor: suffixIconColor,
-          onTap: onSuffixIconTap,
-        ),
-        
-        // Borders
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius),
-          borderSide: BorderSide(
-            color: defaultBorderColor,
-            width: 1.w,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Label above field (if position is above)
+        if (widget.labelPosition == LabelPosition.above &&
+            widget.labelText != null)
+          Padding(
+            padding: EdgeInsets.only(bottom: 8.h),
+            child: Text(
+              widget.labelText!,
+              style:
+                  widget.labelStyle ??
+                  DSTextStyles.label.copyWith(
+                    color: const Color(0xFF292D32),
+                    fontSize: 14.sp,
+                  ),
+            ),
+          ),
+
+        // Main text form field
+        TextFormField(
+          controller: widget.controller,
+          focusNode: widget.focusNode,
+          keyboardType: widget.keyboardType,
+          obscureText: _obscureText,
+          enabled: widget.enabled,
+          readOnly: widget.readOnly,
+          maxLines: _obscureText ? 1 : widget.maxLines,
+          minLines: widget.minLines,
+          maxLength: widget.maxLength,
+          onChanged: widget.onChanged,
+          onFieldSubmitted: widget.onSubmitted,
+          onTap: widget.onTap,
+          validator: widget.validator,
+          inputFormatters: widget.inputFormatters,
+          textCapitalization: widget.textCapitalization,
+          autofocus: widget.autofocus,
+          style: widget.textStyle ?? DSTextStyles.formField,
+          decoration: InputDecoration(
+            // Label for floating position only
+            labelText: widget.labelPosition == LabelPosition.floating
+                ? widget.labelText
+                : null,
+            hintText: widget.hintText,
+            helperText: widget.helperText,
+            errorText: widget.errorText,
+            labelStyle:
+                widget.labelStyle ??
+                DSTextStyles.label.copyWith(color: const Color(0xff6B7280)),
+            hintStyle:
+                widget.hintStyle ??
+                DSTextStyles.hint.copyWith(color: const Color(0xff9CA3AF)),
+            errorStyle:
+                widget.errorStyle ??
+                DSTextStyles.error.copyWith(color: defaultErrorBorderColor),
+            filled: true,
+            fillColor: defaultFillColor,
+            contentPadding: defaultContentPadding,
+
+            // Prefix icon
+            prefixIcon: _buildIcon(
+              widget: widget.prefixIcon,
+              iconPath: widget.prefixIconPath,
+              iconColor: widget.prefixIconColor,
+              onTap: widget.onPrefixIconTap,
+            ),
+
+            // Suffix icon (with auto-toggle support)
+            suffixIcon: _buildSuffixIcon(),
+
+            // Borders
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(defaultBorderRadius),
+              borderSide: BorderSide(color: defaultBorderColor, width: 1.w),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(defaultBorderRadius),
+              borderSide: BorderSide(
+                color: defaultFocusedBorderColor,
+                width: 2.w,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(defaultBorderRadius),
+              borderSide: BorderSide(
+                color: defaultErrorBorderColor,
+                width: 1.w,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(defaultBorderRadius),
+              borderSide: BorderSide(
+                color: defaultErrorBorderColor,
+                width: 2.w,
+              ),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(defaultBorderRadius),
+              borderSide: BorderSide(
+                color: defaultBorderColor.withOpacity(0.5),
+                width: 1.w,
+              ),
+            ),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius),
-          borderSide: BorderSide(
-            color: defaultFocusedBorderColor,
-            width: 2.w,
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius),
-          borderSide: BorderSide(
-            color: defaultErrorBorderColor,
-            width: 1.w,
-          ),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius),
-          borderSide: BorderSide(
-            color: defaultErrorBorderColor,
-            width: 2.w,
-          ),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(defaultBorderRadius),
-          borderSide: BorderSide(
-            color: defaultBorderColor.withOpacity(0.5),
-            width: 1.w,
-          ),
-        ),
-      ),
+      ],
     );
+  }
+
+  /// Build suffix icon with auto-toggle support
+  Widget? _buildSuffixIcon() {
+    // Custom widget takes priority
+    if (widget.suffixIcon != null) {
+      return widget.onSuffixIconTap != null
+          ? GestureDetector(
+              onTap: widget.onSuffixIconTap,
+              child: widget.suffixIcon,
+            )
+          : widget.suffixIcon;
+    }
+
+    // Auto-toggle password visibility (when both icons provided)
+    if (_hasAutoToggle) {
+      final iconPath = _obscureText
+          ? widget.suffixIconPath!
+          : widget.suffixIconPathAlt!;
+      return _buildIcon(
+        iconPath: iconPath,
+        iconColor: widget.suffixIconColor,
+        onTap: _toggleObscureText,
+      );
+    }
+
+    // Single suffix icon (manual control)
+    if (widget.suffixIconPath != null) {
+      return _buildIcon(
+        iconPath: widget.suffixIconPath!,
+        iconColor: widget.suffixIconColor,
+        onTap: widget.onSuffixIconTap,
+      );
+    }
+
+    return null;
   }
 
   Widget? _buildIcon({
@@ -293,7 +434,7 @@ class CustomFormField extends StatelessWidget {
         ),
         child: SvgPicture.asset(
           iconPath,
-          width: DSSize.formFieldIconSize,  // 20.w
+          width: DSSize.formFieldIconSize, // 20.w
           height: DSSize.formFieldIconSize, // 20.h
           colorFilter: iconColor != null
               ? ColorFilter.mode(iconColor, BlendMode.srcIn)
@@ -301,9 +442,7 @@ class CustomFormField extends StatelessWidget {
         ),
       );
 
-      return onTap != null
-          ? GestureDetector(onTap: onTap, child: icon)
-          : icon;
+      return onTap != null ? GestureDetector(onTap: onTap, child: icon) : icon;
     }
 
     return null;
@@ -319,27 +458,31 @@ class DSFormField {
     TextEditingController? controller,
     ValueChanged<String>? onChanged,
     FormFieldValidator<String>? validator,
+    LabelPosition labelPosition = LabelPosition.above,
   }) {
     return CustomFormField(
       labelText: labelText ?? 'Email',
       hintText: hintText ?? 'Enter your email',
+      labelPosition: labelPosition,
       controller: controller,
       keyboardType: TextInputType.emailAddress,
       prefixIconPath: 'assets/icons/email.svg',
       onChanged: onChanged,
-      validator: validator ?? (value) {
-        if (value == null || value.isEmpty) {
-          return 'Email is required';
-        }
-        if (!value.contains('@')) {
-          return 'Enter a valid email';
-        }
-        return null;
-      },
+      validator:
+          validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return 'Email is required';
+            }
+            if (!value.contains('@')) {
+              return 'Enter a valid email';
+            }
+            return null;
+          },
     );
   }
 
-  /// Password field
+  /// Password field with automatic visibility toggle
   static CustomFormField password({
     String? labelText,
     String? hintText,
@@ -347,24 +490,34 @@ class DSFormField {
     ValueChanged<String>? onChanged,
     FormFieldValidator<String>? validator,
     bool showVisibilityToggle = true,
+    LabelPosition labelPosition = LabelPosition.above,
   }) {
     return CustomFormField(
       labelText: labelText ?? 'Password',
       hintText: hintText ?? 'Enter your password',
+      labelPosition: labelPosition,
       controller: controller,
       obscureText: true,
       prefixIconPath: 'assets/icons/lock.svg',
-      suffixIconPath: showVisibilityToggle ? 'assets/icons/eye.svg' : null,
+      // Dual icons for auto-toggle
+      suffixIconPath: showVisibilityToggle
+          ? 'assets/icons/eye_closed.svg'
+          : null,
+      suffixIconPathAlt: showVisibilityToggle
+          ? 'assets/icons/eye_open.svg'
+          : null,
       onChanged: onChanged,
-      validator: validator ?? (value) {
-        if (value == null || value.isEmpty) {
-          return 'Password is required';
-        }
-        if (value.length < 6) {
-          return 'Password must be at least 6 characters';
-        }
-        return null;
-      },
+      validator:
+          validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return 'Password is required';
+            }
+            if (value.length < 6) {
+              return 'Password must be at least 6 characters';
+            }
+            return null;
+          },
     );
   }
 
@@ -375,10 +528,12 @@ class DSFormField {
     TextEditingController? controller,
     ValueChanged<String>? onChanged,
     FormFieldValidator<String>? validator,
+    LabelPosition labelPosition = LabelPosition.above,
   }) {
     return CustomFormField(
       labelText: labelText ?? 'Phone',
       hintText: hintText ?? 'Enter your phone number',
+      labelPosition: labelPosition,
       controller: controller,
       keyboardType: TextInputType.phone,
       prefixIconPath: 'assets/icons/phone.svg',
@@ -396,6 +551,7 @@ class DSFormField {
   }) {
     return CustomFormField(
       hintText: hintText ?? 'Search...',
+      labelPosition: LabelPosition.floating,
       controller: controller,
       prefixIconPath: 'assets/icons/search.svg',
       suffixIconPath: 'assets/icons/close.svg',
@@ -413,10 +569,12 @@ class DSFormField {
     int? maxLength,
     ValueChanged<String>? onChanged,
     FormFieldValidator<String>? validator,
+    LabelPosition labelPosition = LabelPosition.above,
   }) {
     return CustomFormField(
       labelText: labelText,
       hintText: hintText,
+      labelPosition: labelPosition,
       controller: controller,
       maxLines: maxLines,
       minLines: 3,
@@ -433,10 +591,12 @@ class DSFormField {
     TextEditingController? controller,
     ValueChanged<String>? onChanged,
     FormFieldValidator<String>? validator,
+    LabelPosition labelPosition = LabelPosition.above,
   }) {
     return CustomFormField(
       labelText: labelText,
       hintText: hintText,
+      labelPosition: labelPosition,
       controller: controller,
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -448,32 +608,31 @@ class DSFormField {
 
 /// Usage Examples:
 /// 
-/// // Basic text field
+/// // Basic text field with label above
 /// CustomFormField(
 ///   labelText: 'Name',
 ///   hintText: 'Enter your name',
 /// )
 /// 
-/// // With controller and validation
+/// // Floating label (Material Design style)
 /// CustomFormField(
 ///   labelText: 'Email',
-///   controller: emailController,
-///   validator: (value) => value!.isEmpty ? 'Required' : null,
+///   labelPosition: LabelPosition.floating,
+///   hintText: 'Enter your email',
 /// )
 /// 
-/// // With icons
-/// CustomFormField(
-///   hintText: 'Search',
-///   prefixIconPath: 'assets/icons/search.svg',
-///   suffixIconPath: 'assets/icons/close.svg',
-///   onSuffixIconTap: () => controller.clear(),
-/// )
-/// 
-/// // Password field
+/// // Password with automatic visibility toggle
 /// CustomFormField(
 ///   labelText: 'Password',
 ///   obscureText: true,
-///   prefixIconPath: 'assets/icons/lock.svg',
+///   suffixIconPath: 'assets/icons/eye_closed.svg',
+///   suffixIconPathAlt: 'assets/icons/eye_open.svg', // Enables auto-toggle
+/// )
+/// 
+/// // Password with manual control (no auto-toggle)
+/// CustomFormField(
+///   labelText: 'Password',
+///   obscureText: _obscure,
 ///   suffixIconPath: 'assets/icons/eye.svg',
 ///   onSuffixIconTap: () => setState(() => _obscure = !_obscure),
 /// )
@@ -495,19 +654,3 @@ class DSFormField {
 ///   onChanged: (value) => _performSearch(value),
 ///   onClear: () => _clearSearch(),
 /// )
-/// 
-/// DSFormField.textArea(
-///   labelText: 'Description',
-///   maxLength: 500,
-/// )
-/// 
-/// // Using copyWith
-/// final baseField = CustomFormField(
-///   hintText: 'Base field',
-/// );
-/// 
-/// final emailField = baseField.copyWith(
-///   labelText: 'Email',
-///   keyboardType: TextInputType.emailAddress,
-///   prefixIconPath: 'assets/icons/email.svg',
-/// );

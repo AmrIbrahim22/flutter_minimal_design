@@ -20,5 +20,5 @@ export 'src/widgets/custom_rich_text.dart';
 // Utils
 export 'src/utils/ds_extensions.dart';
 // Package info
-const String packageVersion = '1.0.2';
+const String packageVersion = '1.0.3';
 const String packageName = 'flutter_minimal_design';

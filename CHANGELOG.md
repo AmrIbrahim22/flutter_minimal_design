@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2025-01-XX
+
+### Fixed
+- **CustomFormField** - Hot fix applied to custom form field component
+
 ## [1.0.2] - 2025-01-XX
 
 ### Added
