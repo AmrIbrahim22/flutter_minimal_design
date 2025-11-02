@@ -4,11 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// DSSpacing - Design System Spacing
 /// Easy-to-remember naming: xsm, sm, md, lg, xlg, xxlg
 enum DSSpacing {
-  xsm(4),   // Extra small - rare use
-  sm(8),    // Small - tight spacing
-  md(12),   // Medium - standard spacing
-  lg(16),   // Large - section spacing
-  xlg(20),  // Extra large - screen padding
+  xsm(4), // Extra small - rare use
+  sm(8), // Small - tight spacing
+  md(12), // Medium - standard spacing
+  lg(16), // Large - section spacing
+  xlg(20), // Extra large - screen padding
   xxlg(24), // Double extra large - major breaks
   xxxlg(32); // Triple extra large - very major breaks
 
@@ -17,13 +17,13 @@ enum DSSpacing {
 
   // Horizontal spacing
   double get horizontal => value.w;
-  
+
   // Vertical spacing
   double get vertical => value.h;
-  
+
   // All sides spacing
   EdgeInsets get all => EdgeInsets.all(value.w);
-  
+
   // Symmetric spacing
   EdgeInsets symmetric({bool horizontal = false, bool vertical = false}) {
     return EdgeInsets.symmetric(
@@ -37,48 +37,47 @@ enum DSSpacing {
 extension DSEdgeInsets on EdgeInsets {
   // Screen level padding
   static EdgeInsets get screen => EdgeInsets.symmetric(
-    horizontal: DSSpacing.xlg.horizontal,
-    vertical: DSSpacing.xlg.vertical,
-  );
-  
+        horizontal: DSSpacing.lg.horizontal, // 16.w - Material & iOS standard
+        vertical: DSSpacing.lg.vertical, // 16.h
+      );
+static EdgeInsets get bottomSheet => EdgeInsets.symmetric(
+  horizontal: DSSpacing.lg.horizontal,  // 16.w - consistency
+  vertical: DSSpacing.lg.vertical,      // 16.h
+);
   // Safe area top
   static EdgeInsets get topSafe => EdgeInsets.only(top: DSSpacing.xlg.vertical);
-  
+
   // Safe area bottom
-  static EdgeInsets get bottomSafe => EdgeInsets.only(bottom: DSSpacing.xlg.vertical);
-  
+  static EdgeInsets get bottomSafe =>
+      EdgeInsets.only(bottom: DSSpacing.xlg.vertical);
+
   // Container padding (12w × 8h)
   static EdgeInsets get container => EdgeInsets.symmetric(
-    horizontal: DSSpacing.md.horizontal,
-    vertical: DSSpacing.sm.vertical,
-  );
-  
+        horizontal: DSSpacing.md.horizontal,
+        vertical: DSSpacing.sm.vertical,
+      );
+
   // List item padding (12w × 12h)
   static EdgeInsets get listItem => EdgeInsets.all(DSSpacing.md.value.w);
-  
+
   // Button padding (16w × 12h)
   static EdgeInsets get button => EdgeInsets.symmetric(
-    horizontal: DSSpacing.lg.horizontal,
-    vertical: DSSpacing.md.vertical,
-  );
-  
+        horizontal: DSSpacing.lg.horizontal,
+        vertical: DSSpacing.md.vertical,
+      );
+
   // Card padding (16w × 12h)
   static EdgeInsets get card => EdgeInsets.symmetric(
-    horizontal: DSSpacing.lg.horizontal,
-    vertical: DSSpacing.md.vertical,
-  );
-  
+        horizontal: DSSpacing.lg.horizontal,
+        vertical: DSSpacing.md.vertical,
+      );
+
   // Form field content padding (16w × 14h)
   static EdgeInsets get formField => EdgeInsets.symmetric(
-    horizontal: DSSpacing.lg.horizontal,
-    vertical: 14.h,
-  );
-  
-  // Bottom sheet padding
-  static EdgeInsets get bottomSheet => EdgeInsets.symmetric(
-    horizontal: DSSpacing.xlg.horizontal,
-    vertical: DSSpacing.xlg.vertical,
-  );
+        horizontal: DSSpacing.lg.horizontal,
+        vertical: 14.h,
+      );
+
 }
 
 /// Vertical spacing widgets

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../flutter_minimal_design.dart';
-import '../utils/ds_navigation_utils.dart';
 
 /// CustomScreen - Universal screen wrapper with design system integration
 ///
@@ -237,7 +236,7 @@ class CustomScreen extends StatelessWidget {
   Widget _buildContent() {
     // Apply padding
     Widget content = Padding(
-      padding: padding ?? DSEdgeInsets.screen, // Default: 20.w × 20.h
+      padding: padding ?? DSEdgeInsets.screen, 
       child: body,
     );
 

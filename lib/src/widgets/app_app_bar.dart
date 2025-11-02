@@ -19,7 +19,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? borderColor;
   final FontWeight? titleFontWeight;
   final double? titleFontSize;
-  
+
   // NEW: Custom leading widget and border control
   final Widget? leadingWidget;
   final bool showLeadingBorder;
@@ -82,16 +82,16 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: DSSpacing.sm.horizontal, // 8.w
+        horizontal: DSSpacing.lg.horizontal, // 16.w - Material & iOS standard
         vertical: DSSpacing.md.vertical, // 12.h
       ),
       child: AppBar(
         leading: GestureDetector(
-          onTap: onBackPressed ??
-              () => NavigationUtils.defaultBackAction(context),
-          child:  hideIcon
-            ? const SizedBox.shrink()
-            : leadingWidget ?? _buildDefaultLeading(),
+          onTap:
+              onBackPressed ?? () => NavigationUtils.defaultBackAction(context),
+          child: hideIcon
+              ? const SizedBox.shrink()
+              : leadingWidget ?? _buildDefaultLeading(),
         ),
         title: title != null
             ? Text(
@@ -111,7 +111,8 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
             ? [
                 Padding(
                   padding: EdgeInsets.only(
-                    right: DSSpacing.sm.horizontal, // 8.w
+                    right: DSSpacing
+                        .lg.horizontal, // 16.w - matches leading padding
                   ),
                   child: endWidget!,
                 ),
@@ -123,8 +124,8 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _buildDefaultLeading() {
     return Container(
-      height: DSSize.smallButtonHeight, // 32.h
-      width: DSSize.smallButtonHeight, // 32.w
+      height: 44.h, // iOS: 44pt min, Material: 48dp min
+      width: 44.w,
       decoration: BoxDecoration(
         borderRadius: DSRadius.sm, // 8.r
         border: showLeadingBorder
