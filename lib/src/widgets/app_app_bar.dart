@@ -86,18 +86,12 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
         vertical: DSSpacing.md.vertical, // 12.h
       ),
       child: AppBar(
-        leading: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: DSSpacing.sm.horizontal, // 8.w
-            vertical: DSSpacing.md.vertical, // 12.h
-          ),
-          child: GestureDetector(
-            onTap: onBackPressed ??
-                () => NavigationUtils.defaultBackAction(context),
-            child: hideIcon
-                ? const SizedBox.shrink()
-                : leadingWidget ?? _buildDefaultLeading(),
-          ),
+        leading: GestureDetector(
+          onTap: onBackPressed ??
+              () => NavigationUtils.defaultBackAction(context),
+          child:  hideIcon
+            ? const SizedBox.shrink()
+            : leadingWidget ?? _buildDefaultLeading(),
         ),
         title: title != null
             ? Text(
