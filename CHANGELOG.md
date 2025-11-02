@@ -2,12 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.3] - 2025-01-XX
+## [1.0.4] - 2025-11-01
+
+### Fixed
+- **CustpmAppBar** - Hot fix applied to custom AppBar component
+## [1.0.3] - 2025-11-01
 
 ### Fixed
 - **CustomFormField** - Hot fix applied to custom form field component
 
-## [1.0.2] - 2025-01-XX
+## [1.0.2] - 2025-11-01
 
 ### Added
 - **DSRichText** - Rich text widget with DSTextSpan support for mixed styles, clickable links, and formatted text
