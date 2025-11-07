@@ -87,6 +87,23 @@ class CustomFormField extends StatefulWidget {
   final FocusNode? focusNode;
   final TextCapitalization textCapitalization;
   final bool autofocus;
+  //new properties added
+  final bool? autocorrect;
+  final Iterable<String>? autofillHints;
+  final AutovalidateMode? autovalidateMode;
+  final TextInputAction? textInputAction;
+  final FormFieldSetter<String>? onSaved;
+  final bool? canRequestFocus;
+  final TapRegionCallback? onTapOutside;
+  final EditableTextContextMenuBuilder? contextMenuBuilder;
+  final Clip? clipBehavior;
+  final bool? enableIMEPersonalizedLearning;
+  final InputCounterWidgetBuilder? errorBuilder;
+  final bool? expands;
+  final Color? cursorErrorColor;
+  final String? forceErrorText;
+  final bool? enableInteractiveSelection;
+  final MaxLengthEnforcement? maxLengthEnforcement;
 
   const CustomFormField({
     super.key,
@@ -130,6 +147,23 @@ class CustomFormField extends StatefulWidget {
     this.focusNode,
     this.textCapitalization = TextCapitalization.none,
     this.autofocus = false,
+    // New parameters
+    this.autocorrect,
+    this.autofillHints,
+    this.autovalidateMode,
+    this.textInputAction,
+    this.onSaved,
+    this.canRequestFocus,
+    this.onTapOutside,
+    this.contextMenuBuilder,
+    this.clipBehavior,
+    this.enableIMEPersonalizedLearning,
+    this.errorBuilder,
+    this.expands,
+    this.cursorErrorColor,
+    this.forceErrorText,
+    this.enableInteractiveSelection,
+    this.maxLengthEnforcement,
   });
 
   /// Complete copyWith method
@@ -174,6 +208,22 @@ class CustomFormField extends StatefulWidget {
     FocusNode? focusNode,
     TextCapitalization? textCapitalization,
     bool? autofocus,
+    bool? autocorrect,
+    Iterable<String>? autofillHints,
+    AutovalidateMode? autovalidateMode,
+    TextInputAction? textInputAction,
+    FormFieldSetter<String>? onSaved,
+    bool? canRequestFocus,
+    TapRegionCallback? onTapOutside,
+    EditableTextContextMenuBuilder? contextMenuBuilder,
+    Clip? clipBehavior,
+    bool? enableIMEPersonalizedLearning,
+    InputCounterWidgetBuilder? errorBuilder,
+    bool? expands,
+    Color? cursorErrorColor,
+    String? forceErrorText,
+    bool? enableInteractiveSelection,
+    MaxLengthEnforcement? maxLengthEnforcement,
   }) {
     return CustomFormField(
       labelText: labelText ?? this.labelText,
@@ -216,6 +266,25 @@ class CustomFormField extends StatefulWidget {
       focusNode: focusNode ?? this.focusNode,
       textCapitalization: textCapitalization ?? this.textCapitalization,
       autofocus: autofocus ?? this.autofocus,
+      // New parameters
+      autocorrect: autocorrect ?? this.autocorrect,
+      autofillHints: autofillHints ?? this.autofillHints,
+      autovalidateMode: autovalidateMode ?? this.autovalidateMode,
+      textInputAction: textInputAction ?? this.textInputAction,
+      onSaved: onSaved ?? this.onSaved,
+      canRequestFocus: canRequestFocus ?? this.canRequestFocus,
+      onTapOutside: onTapOutside ?? this.onTapOutside,
+      contextMenuBuilder: contextMenuBuilder ?? this.contextMenuBuilder,
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+      enableIMEPersonalizedLearning:
+          enableIMEPersonalizedLearning ?? this.enableIMEPersonalizedLearning,
+      errorBuilder: errorBuilder ?? this.errorBuilder,
+      expands: expands ?? this.expands,
+      cursorErrorColor: cursorErrorColor ?? this.cursorErrorColor,
+      forceErrorText: forceErrorText ?? this.forceErrorText,
+      enableInteractiveSelection:
+          enableInteractiveSelection ?? this.enableInteractiveSelection,
+      maxLengthEnforcement: maxLengthEnforcement ?? this.maxLengthEnforcement,
     );
   }
 
@@ -280,8 +349,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
             padding: EdgeInsets.only(bottom: 8.h),
             child: Text(
               widget.labelText!,
-              style:
-                  widget.labelStyle ??
+              style: widget.labelStyle ??
                   DSTextStyles.label.copyWith(
                     color: const Color(0xFF292D32),
                     fontSize: 14.sp,
@@ -291,6 +359,22 @@ class _CustomFormFieldState extends State<CustomFormField> {
 
         // Main text form field
         TextFormField(
+          autocorrect: widget.autocorrect ?? true,
+          autofillHints: widget.autofillHints,
+          autovalidateMode: widget.autovalidateMode,
+          textInputAction: widget.textInputAction,
+          onSaved: widget.onSaved,
+          canRequestFocus: widget.canRequestFocus ?? true,
+          onTapOutside: widget.onTapOutside,
+          contextMenuBuilder: widget.contextMenuBuilder,
+          clipBehavior: widget.clipBehavior ?? Clip.hardEdge,
+          enableIMEPersonalizedLearning:
+              widget.enableIMEPersonalizedLearning ?? true,
+          buildCounter: widget.errorBuilder,
+          expands: widget.expands ?? false,
+          cursorErrorColor: widget.cursorErrorColor,
+          enableInteractiveSelection: widget.enableInteractiveSelection,
+          maxLengthEnforcement: widget.maxLengthEnforcement,
           controller: widget.controller,
           focusNode: widget.focusNode,
           keyboardType: widget.keyboardType,
@@ -316,14 +400,11 @@ class _CustomFormFieldState extends State<CustomFormField> {
             hintText: widget.hintText,
             helperText: widget.helperText,
             errorText: widget.errorText,
-            labelStyle:
-                widget.labelStyle ??
+            labelStyle: widget.labelStyle ??
                 DSTextStyles.label.copyWith(color: const Color(0xff6B7280)),
-            hintStyle:
-                widget.hintStyle ??
+            hintStyle: widget.hintStyle ??
                 DSTextStyles.hint.copyWith(color: const Color(0xff9CA3AF)),
-            errorStyle:
-                widget.errorStyle ??
+            errorStyle: widget.errorStyle ??
                 DSTextStyles.error.copyWith(color: defaultErrorBorderColor),
             filled: true,
             fillColor: defaultFillColor,
@@ -393,9 +474,8 @@ class _CustomFormFieldState extends State<CustomFormField> {
 
     // Auto-toggle password visibility (when both icons provided)
     if (_hasAutoToggle) {
-      final iconPath = _obscureText
-          ? widget.suffixIconPath!
-          : widget.suffixIconPathAlt!;
+      final iconPath =
+          _obscureText ? widget.suffixIconPath! : widget.suffixIconPathAlt!;
       return _buildIcon(
         iconPath: iconPath,
         iconColor: widget.suffixIconColor,
@@ -468,8 +548,7 @@ class DSFormField {
       keyboardType: TextInputType.emailAddress,
       prefixIconPath: 'assets/icons/email.svg',
       onChanged: onChanged,
-      validator:
-          validator ??
+      validator: validator ??
           (value) {
             if (value == null || value.isEmpty) {
               return 'Email is required';
@@ -500,15 +579,12 @@ class DSFormField {
       obscureText: true,
       prefixIconPath: 'assets/icons/lock.svg',
       // Dual icons for auto-toggle
-      suffixIconPath: showVisibilityToggle
-          ? 'assets/icons/eye_closed.svg'
-          : null,
-      suffixIconPathAlt: showVisibilityToggle
-          ? 'assets/icons/eye_open.svg'
-          : null,
+      suffixIconPath:
+          showVisibilityToggle ? 'assets/icons/eye_closed.svg' : null,
+      suffixIconPathAlt:
+          showVisibilityToggle ? 'assets/icons/eye_open.svg' : null,
       onChanged: onChanged,
-      validator:
-          validator ??
+      validator: validator ??
           (value) {
             if (value == null || value.isEmpty) {
               return 'Password is required';
