@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.6] - 2025-11-07
+
+### Changed
+- Comprehensive README rewrite with spacing, sizing, and component reference tables
+- Installation instructions synced with current dependency versions
+
+### Fixed
+- Aligned package metadata and documentation to reflect the 1.0.6 release
+
 ## [1.0.5] - 2025-11-01
 ### Fixed
 - **CustomScreen** - Hot fix applied to custom Screen component
