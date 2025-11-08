@@ -46,7 +46,7 @@ Add the package and its peer dependencies to `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_minimal_design: ^1.0.6
+  flutter_minimal_design: ^1.0.7
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.2.1
 ```
@@ -291,7 +291,7 @@ CustomAppText(
 `DSTextStyles.initialize(context)` is idempotent—call it once after the first frame if you need the `ThemeData` font family.
 
 ### Buttons
-`DSButton` exposes pre-configured constructors: `primary`, `secondary`, `success`, `danger`, `text`, `ghost`.
+`DSButton` exposes pre-configured constructors: `primary`, `secondary`, `success`, `danger`, `text`, `warning`.
 
 ```dart
 DSButton.primary(
@@ -304,6 +304,80 @@ DSButton.text(
   onPressed: () {},
 );
 ```
+
+**Gradient Buttons** - Create stunning gradient buttons with full control:
+
+```dart
+// Basic gradient button
+CustomButton(
+  label: 'Gradient Button',
+  onPressed: () {},
+  useGradient: true,
+  gradient: LinearGradient(
+    colors: [DSColors.primary, DSColors.secondary],
+  ),
+  textColor: Colors.white,
+)
+
+// Primary button with gradient
+DSButton.primary(
+  label: 'Continue',
+  onPressed: () {},
+  useGradient: true,
+  gradient: LinearGradient(
+    colors: [Color(0xFF1A4220), Color(0xFF2E7D32)],
+  ),
+)
+
+// Radial gradient
+CustomButton(
+  label: 'Radial Gradient',
+  onPressed: () {},
+  useGradient: true,
+  gradient: RadialGradient(
+    colors: [Colors.orange, Colors.red],
+    center: Alignment.center,
+    radius: 0.8,
+  ),
+  textColor: Colors.white,
+)
+
+// Gradient with icon
+CustomButton(
+  label: 'Add to Cart',
+  onPressed: () {},
+  isIconButton: true,
+  iconPath: 'assets/icons/cart.svg',
+  iconColor: Colors.white,
+  useGradient: true,
+  gradient: LinearGradient(
+    colors: [DSColors.primary, DSColors.primaryDark],
+  ),
+  textColor: Colors.white,
+)
+
+// Disabled gradient (automatically fades)
+CustomButton(
+  label: 'Disabled',
+  onPressed: () {},
+  enabled: false,
+  useGradient: true,
+  gradient: LinearGradient(
+    colors: [Colors.blue, Colors.purple],
+  ),
+  textColor: Colors.white,
+)
+```
+
+**CustomButton Properties:**
+- `useGradient` - Enable gradient background
+- `gradient` - LinearGradient, RadialGradient, or SweepGradient
+- `enabled` - Automatically handles disabled state (fades gradient to 50% opacity)
+- `isIconButton` - Add SVG icons to buttons
+- `iconPath`, `iconColor`, `iconSpacer` - Icon customization
+- `labelSize`, `labelFontWeight` - Text styling
+- `maxLines`, `overflow` - Text overflow handling
+- `width`, `height`, `borderRadius`, `borderColor` - Layout control
 
 Reach for `CustomButton` when you need deep customization (icon buttons, gradients, custom shapes). Base spacing and radii are applied for you.
 

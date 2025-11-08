@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.7] - 2025-11-07
+
+### Added
+- **CustomButton** - Gradient support with `useGradient` and `gradient` properties
+  - Support for LinearGradient, RadialGradient, and SweepGradient
+  - Automatic disabled state handling (fades gradient to 50% opacity when disabled)
+  - Gradient support in `DSButton.primary()` constructor
+  - Enhanced `copyWith` method includes gradient properties
+
+### Features
+- Create beautiful gradient buttons with full control over gradient type and colors
+- Seamless integration with existing button variants
+- Disabled gradient buttons automatically fade for better UX
+- Works with icon buttons and all button customization options
+
 ## [1.0.6] - 2025-11-07
 
 ### Changed
