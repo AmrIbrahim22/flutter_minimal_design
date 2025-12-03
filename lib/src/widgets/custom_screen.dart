@@ -50,6 +50,8 @@ class CustomScreen extends StatelessWidget {
   final bool resizeToAvoidBottomInset;
   final bool extendBody;
   final bool extendBodyBehindAppBar;
+  final bool dismissKeyboardOnTap;
+  final HitTestBehavior? tapBehavior;
 
   // Loading & error states
   final bool isLoading;
@@ -97,6 +99,8 @@ class CustomScreen extends StatelessWidget {
     this.onRetry,
     this.drawer,
     this.endDrawer,
+    this.dismissKeyboardOnTap = false,
+    this.tapBehavior,
   });
 
   /// Complete copyWith method
@@ -134,6 +138,8 @@ class CustomScreen extends StatelessWidget {
     VoidCallback? onRetry,
     Widget? drawer,
     Widget? endDrawer,
+    bool? dismissKeyboardOnTap,
+    HitTestBehavior? tapBehavior,
   }) {
     return CustomScreen(
       body: body ?? this.body,
@@ -173,6 +179,8 @@ class CustomScreen extends StatelessWidget {
       onRetry: onRetry ?? this.onRetry,
       drawer: drawer ?? this.drawer,
       endDrawer: endDrawer ?? this.endDrawer,
+      dismissKeyboardOnTap: dismissKeyboardOnTap ?? this.dismissKeyboardOnTap,
+      tapBehavior: tapBehavior ?? this.tapBehavior,
     );
   }
 
@@ -224,6 +232,13 @@ class CustomScreen extends StatelessWidget {
     else {
       content = _buildContent();
     }
+    if (dismissKeyboardOnTap) {
+      content = GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: tapBehavior ?? HitTestBehavior.opaque,
+        child: content,
+      );
+    }
 
     // Wrap in safe area if needed
     if (useSafeArea) {
@@ -236,7 +251,7 @@ class CustomScreen extends StatelessWidget {
   Widget _buildContent() {
     // Apply padding
     Widget content = Padding(
-      padding: padding ?? DSEdgeInsets.screen, 
+      padding: padding ?? DSEdgeInsets.screen,
       child: body,
     );
 
