@@ -1,6 +1,8 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.8] - 2025-12-03
+-  **CustomButton** Add dismiss keyboard whe user tap outside 
 
 ## [1.0.7] - 2025-11-07
 
