@@ -19,6 +19,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? borderColor;
   final FontWeight? titleFontWeight;
   final double? titleFontSize;
+  final String? fontFamily;
 
   // NEW: Custom leading widget and border control
   final Widget? leadingWidget;
@@ -41,6 +42,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingWidget,
     this.showLeadingBorder = true,
     this.leadingBorderWidth,
+    this.fontFamily
   });
 
   /// copyWith method for easy customization
@@ -100,6 +102,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: titleColor ?? Colors.black,
                   fontWeight: titleFontWeight ?? FontWeight.w700,
                   fontSize: titleFontSize?.sp ?? 16.sp,
+                  fontFamily: fontFamily??  "Almarai"
                 ),
               )
             : null,
