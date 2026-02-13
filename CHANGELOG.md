@@ -1,6 +1,9 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.9] - 2026-02-13
+add fornt family to appbar title
+All notable changes to this project will be documented in this file.
 ## [1.0.8] - 2025-12-03
 -  **CustomButton** Add dismiss keyboard whe user tap outside 
 
